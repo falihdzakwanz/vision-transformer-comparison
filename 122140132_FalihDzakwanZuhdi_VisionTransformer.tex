@@ -1,0 +1,613 @@
+\documentclass[11pt,a4paper]{article}
+%%%%%%%%%%%%%%%%%%%%%%%%% Credit %%%%%%%%%%%%%%%%%%%%%%%%
+
+% template ini dibuat oleh martin.manullang@if.itera.ac.id untuk dipergunakan oleh seluruh sivitas akademik itera.
+
+%%%%%%%%%%%%%%%%%%%%%%%%% PACKAGE starts HERE %%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage[expansion=false]{microtype}
+\captionsetup[table]{name=Tabel}
+\captionsetup[figure]{name=Gambar}
+\usepackage{tabulary}
+\usepackage{minted}
+% \usepackage{amsmath}
+\usepackage{fancyhdr}
+% \usepackage{amssymb}
+% \usepackage{amsthm}
+\usepackage{placeins}
+% \usepackage{amsfonts}
+\usepackage{graphicx}
+\usepackage[all]{xy}
+\usepackage{tikz}
+\usepackage{verbatim}
+\usepackage[left=2cm,right=2cm,top=3cm,bottom=2.5cm]{geometry}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    linkcolor={red!50!black},
+    citecolor={blue!50!black},
+    urlcolor={blue!80!black}
+}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{multirow}
+\usepackage{psfrag}
+\usepackage[T1]{fontenc}
+\usepackage[scaled]{beramono}
+% Enable inserting code into the document
+\usepackage{listings}
+\usepackage{xcolor} 
+% custom color & style for listing
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\definecolor{LightGray}{gray}{0.9}
+\lstdefinestyle{mystyle}{
+	backgroundcolor=\color{backcolour},   
+	commentstyle=\color{green},
+	keywordstyle=\color{codegreen},
+	numberstyle=\tiny\color{codegray},
+	stringstyle=\color{codepurple},
+	basicstyle=\ttfamily\footnotesize,
+	breakatwhitespace=false,         
+	breaklines=true,                 
+	captionpos=b,                    
+	keepspaces=true,                 
+	numbers=left,                    
+	numbersep=5pt,                  
+	showspaces=false,                
+	showstringspaces=false,
+	showtabs=false,                  
+	tabsize=2
+}
+\lstset{style=mystyle}
+\renewcommand{\lstlistingname}{Kode}
+%%%%%%%%%%%%%%%%%%%%%%%%% PACKAGE ends HERE %%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%% Data Diri %%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\student}{\textbf{Falih Dzakwan Zuhdi (122140132)}}
+\newcommand{\course}{\textbf{Pembelajaran Mendalam (IF25-40305)}}
+\newcommand{\assignment}{\textbf{Perbandingan Model Vision Transformer}}
+
+%%%%%%%%%%%%%%%%%%% using theorem style %%%%%%%%%%%%%%%%%%%%
+\newtheorem{thm}{Theorem}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{defn}[thm]{Definition}
+\newtheorem{exa}[thm]{Example}
+\newtheorem{rem}[thm]{Remark}
+\newtheorem{coro}[thm]{Corollary}
+\newtheorem{quest}{Question}[section]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{lipsum}%% a garbage package you don't need except to create examples.
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{Falih Dzakwan Zuhdi (122140132)}
+\rhead{ \thepage}
+\cfoot{\textbf{Perbandingan Model Vision Transformer}}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+%%%%%%%%%%%%%%  Shortcut for usual set of numbers  %%%%%%%%%%%
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\setlength\headheight{14pt}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%555
+\begin{document}
+\thispagestyle{empty}
+\begin{center}
+	\includegraphics[scale = 0.15]{Figure/ifitera-header.png}
+	\vspace{0.1cm}
+\end{center}
+\noindent
+\rule{17cm}{0.2cm}\\[0.3cm]
+Nama: \student \hfill Tugas Ke: \assignment\\[0.1cm]
+Mata Kuliah: \course \hfill Tanggal: 15 November 2025\\
+\rule{17cm}{0.05cm}
+\vspace{0.1cm}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% BODY DOCUMENT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\textbf{Repository:} \url{https://github.com/falihdzakwanz/vision-transformer-comparison.git}
+
+\section{PENDAHULUAN}
+
+\subsection{Latar Belakang}
+Vision Transformer (ViT) telah merevolusi bidang computer vision dengan mengadaptasi arsitektur Transformer yang awalnya dirancang untuk pemrosesan bahasa alami (NLP) ke domain visual \cite{dosovitskiy2021image}. Berbeda dengan Convolutional Neural Networks (CNN) seperti ResNet \cite{he2016deep} yang mengandalkan inductive bias melalui operasi konvolusi, Vision Transformer memanfaatkan mekanisme self-attention untuk menangkap dependensi jarak jauh antar patch gambar secara global. Pendekaran ini terbukti sangat efektif ketika dilatih dengan dataset berskala besar seperti ImageNet \cite{deng2009imagenet}, bahkan melampaui performa CNN state-of-the-art.
+
+Keberhasilan ViT memicu perkembangan berbagai varian arsitektur, termasuk Swin Transformer yang memperkenalkan hierarchical feature representation dengan shifted windows \cite{liu2021swin}, dan Data-efficient Image Transformer (DeiT) yang fokus pada efisiensi training dengan knowledge distillation \cite{touvron2021deit}. Masing-masing model menawarkan trade-off yang berbeda dalam hal akurasi, efisiensi komputasi, dan jumlah parameter.
+
+\subsection{Motivasi Perbandingan Model}
+Dalam konteks aplikasi praktis seperti klasifikasi makanan Indonesia, pemilihan model yang tepat sangat krusial. Swin Transformer menawarkan representasi hierarchical yang mirip CNN namun dengan kekuatan global attention, sementara DeiT dirancang untuk efisiensi training dan inference. Memahami performa relatif kedua model ini pada dataset Indonesian Food dapat memberikan insight berharga untuk deployment aplikasi real-world, di mana batasan komputasi dan akurasi sama-sama penting.
+
+\subsection{Tujuan Eksperimen}
+Penelitian ini bertujuan untuk:
+\begin{itemize}
+    \item Membandingkan performa Swin Transformer Tiny dan DeiT Tiny pada klasifikasi 5 kelas makanan Indonesia
+    \item Menganalisis trade-off antara akurasi, jumlah parameter, dan kecepatan inferensi
+    \item Mengevaluasi kesesuaian masing-masing model untuk aplikasi klasifikasi makanan dengan batasan komputasi
+    \item Memberikan rekomendasi pemilihan model berdasarkan use case spesifik
+\end{itemize}
+
+\section{LANDASAN TEORI}
+
+\subsection{Transformer dan Self-Attention}
+Transformer adalah arsitektur neural network yang mengandalkan mekanisme self-attention untuk memproses sequential data \cite{vaswani2017attention}. Self-attention menghitung hubungan antar elemen dalam sequence dengan menggunakan tiga proyeksi linear: Query (Q), Key (K), dan Value (V). Attention weight dihitung dengan:
+
+$$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V$$
+
+Di mana $d_k$ adalah dimensi key vector. Mekanisme ini memungkinkan model untuk menangkap dependensi jarak jauh secara efisien tanpa batasan receptive field seperti pada CNN.
+
+\subsection{Swin Transformer}
+Swin Transformer (Shifted Window Transformer) \cite{liu2021swin} memperkenalkan pendekatan hierarchical untuk Vision Transformer. Arsitektur ini memiliki beberapa karakteristik kunci:
+
+\textbf{Hierarchical Feature Maps:} Swin menggunakan patch merging untuk membuat feature maps dengan resolusi berbeda (seperti piramida pada CNN), memungkinkan model menangkap informasi multi-scale.
+
+\textbf{Shifted Window Attention:} Alih-alih menghitung global attention, Swin membatasi attention pada windows lokal yang bergeser antar layer. Ini mengurangi kompleksitas komputasi dari $O(n^2)$ menjadi $O(n)$ dimana $n$ adalah jumlah patch.
+
+\textbf{Arsitektur:} Swin Tiny yang digunakan dalam eksperimen ini memiliki 4 stage dengan embedding dimension 96, menghasilkan sekitar 28 juta parameter. Model ini menggunakan patch size 4×4 dan window size 7×7.
+
+\textbf{Kelebihan:}
+\begin{itemize}
+    \item Efisien untuk gambar resolusi tinggi
+    \item Hierarchical representation cocok untuk dense prediction tasks
+    \item Kompleksitas linear terhadap ukuran gambar
+\end{itemize}
+
+\textbf{Kekurangan:}
+\begin{itemize}
+    \item Lebih kompleks untuk diimplementasikan
+    \item Jumlah parameter lebih besar dibanding DeiT
+    \item Membutuhkan memori lebih besar saat training
+\end{itemize}
+
+\subsection{Data-efficient Image Transformer (DeiT)}
+DeiT \cite{touvron2021deit} adalah varian ViT yang dirancang untuk efisiensi training tanpa memerlukan dataset skala sangat besar. Karakteristik utama:
+
+\textbf{Knowledge Distillation:} DeiT menggunakan distillation token tambahan yang belajar dari model teacher (biasanya CNN pre-trained). Ini memungkinkan model belajar lebih efisien dari dataset medium-size.
+
+\textbf{Arsitektur:} DeiT Tiny menggunakan patch size 16×16, embedding dimension 192, dan 12 attention heads dalam 12 transformer blocks, menghasilkan sekitar 5.5 juta parameter.
+
+\textbf{Training Strategy:} Menggunakan augmentasi data agresif (RandAugment, Mixup, CutMix) dan regularisasi kuat untuk mencegah overfitting.
+
+\textbf{Kelebihan:}
+\begin{itemize}
+    \item Jumlah parameter jauh lebih sedikit (5.5M vs 28M)
+    \item Inferensi lebih cepat karena global attention yang efisien
+    \item Lebih mudah untuk fine-tuning pada dataset kecil
+\end{itemize}
+
+\textbf{Kekurangan:}
+\begin{itemize}
+    \item Global attention bisa kurang efisien untuk gambar sangat besar
+    \item Tidak memiliki hierarchical features untuk multi-scale understanding
+    \item Akurasi bisa lebih rendah dibanding Swin pada dataset besar
+\end{itemize}
+
+\subsection{Perbedaan Kunci}
+\begin{table}[h]
+\caption{Perbandingan Teoritis Swin Transformer vs DeiT}
+\label{tab:theory-comparison}
+\centering
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Aspek} & \textbf{Swin Transformer} & \textbf{DeiT} \\ \hline
+Attention Mechanism & Shifted Window (Local) & Global Attention \\ \hline
+Feature Hierarchy & Hierarchical (Multi-scale) & Single-scale \\ \hline
+Patch Size & 4×4 & 16×16 \\ \hline
+Computational Complexity & O(n) linear & O(n²) quadratic \\ \hline
+Training Strategy & Standard fine-tuning & Distillation-based \\ \hline
+Best Use Case & High-res images, dense tasks & Image classification \\ \hline
+\end{tabular}
+\end{table}
+
+\section{METODOLOGI}
+
+\subsection{Deskripsi Dataset}
+Dataset yang digunakan adalah Indonesian Food Dataset yang terdiri dari 5 kelas makanan khas Indonesia:
+
+\begin{itemize}
+    \item \textbf{Bakso}: Sup bola daging dengan mie dan sayuran
+    \item \textbf{Gado-gado}: Salad sayuran dengan saus kacang
+    \item \textbf{Nasi Goreng}: Nasi goreng dengan berbagai topping
+    \item \textbf{Rendang}: Daging sapi dengan bumbu rempah khas Minangkabau
+    \item \textbf{Soto Ayam}: Sup ayam kuah kuning dengan bumbu khas
+\end{itemize}
+
+Dataset memiliki karakteristik sebagai berikut:
+\begin{itemize}
+    \item Total gambar: 2,219 images
+    \item Pembagian: 80\% training (1,775 images), 20\% validation (444 images)
+    \item Distribusi kelas: Balanced (setiap kelas memiliki jumlah sampel yang relatif seimbang)
+    \item Format: JPG dengan resolusi bervariasi
+    \item Sumber: Dikumpulkan dari berbagai sumber dengan variasi angle, lighting, dan background
+\end{itemize}
+
+Dataset ini menantang karena:
+\begin{itemize}
+    \item Variasi visual tinggi dalam satu kelas (contoh: rendang bisa disajikan dengan berbagai cara)
+    \item Beberapa kelas memiliki komponen visual yang overlap (contoh: nasi goreng dan nasi di soto ayam)
+    \item Variasi lighting dan background yang signifikan
+    \item Occlusion dan partial view pada beberapa gambar
+\end{itemize}
+
+\subsection{Preprocessing dan Augmentasi Data}
+Preprocessing pipeline yang diterapkan:
+
+\textbf{Training Data:}
+\begin{lstlisting}[language=Python, caption=Data Augmentation Pipeline,label={lst:augmentation}]
+transforms.Compose([
+    transforms.Resize((256, 256)),
+    transforms.RandomCrop((224, 224)),
+    transforms.RandomHorizontalFlip(p=0.5),
+    transforms.RandomRotation(degrees=15),
+    transforms.ColorJitter(brightness=0.2, 
+                          contrast=0.2,
+                          saturation=0.2, 
+                          hue=0.1),
+    transforms.RandomErasing(p=0.5, 
+                            scale=(0.02, 0.33),
+                            ratio=(0.3, 3.3)),
+    transforms.ToTensor(),
+    transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                        std=[0.229, 0.224, 0.225])
+])
+\end{lstlisting}
+
+\textbf{Validation Data:}
+\begin{itemize}
+    \item Resize to 256×256
+    \item Center Crop to 224×224
+    \item ToTensor
+    \item Normalize dengan ImageNet statistics
+\end{itemize}
+
+RandomErasing ditambahkan untuk meningkatkan regularisasi dan mencegah overfitting dengan menghapus patch random pada gambar.
+
+\subsection{Konfigurasi Training}
+\textbf{Hyperparameters:}
+\begin{itemize}
+    \item \textbf{Batch Size:} 32
+    \item \textbf{Epochs:} 10 (dengan early stopping patience=3)
+    \item \textbf{Learning Rate:} 5e-5
+    \item \textbf{Optimizer:} AdamW
+    \item \textbf{Weight Decay:} 0.05
+    \item \textbf{Learning Rate Scheduler:} CosineAnnealingLR (T\_max=epochs)
+    \item \textbf{Loss Function:} CrossEntropyLoss
+\end{itemize}
+
+\textbf{Fine-tuning Strategy:}
+\begin{itemize}
+    \item Menggunakan pre-trained weights dari ImageNet-1K
+    \item Mengganti classifier head dengan Linear layer untuk 5 kelas
+    \item Fine-tuning seluruh model (tidak freeze layers)
+\end{itemize}
+
+\textbf{Early Stopping:}
+Implementasi early stopping dengan patience=3 untuk mencegah overfitting. Training akan berhenti jika validation loss tidak membaik selama 3 epoch berturut-turut.
+
+\subsection{Library dan Framework}
+\begin{itemize}
+    \item \textbf{Python:} 3.8+
+    \item \textbf{PyTorch:} 2.0+
+    \item \textbf{timm:} 0.9.12 (PyTorch Image Models)
+    \item \textbf{torchvision:} Latest
+    \item \textbf{scikit-learn:} Untuk metrics evaluation
+    \item \textbf{matplotlib, seaborn:} Untuk visualisasi
+    \item \textbf{pandas:} Untuk data manipulation
+\end{itemize}
+
+\subsection{Spesifikasi Hardware}
+\begin{itemize}
+    \item \textbf{GPU:} NVIDIA CUDA-capable GPU
+    \item \textbf{CUDA Version:} 11.x+
+    \item \textbf{RAM:} 16GB+
+    \item \textbf{OS:} Windows 10/11
+\end{itemize}
+
+\subsection{Cara Pengukuran Metrik Evaluasi}
+\textbf{Accuracy:} 
+$$\text{Accuracy} = \frac{\text{Correct Predictions}}{\text{Total Predictions}}$$
+
+\textbf{Precision (per-class):}
+$$\text{Precision} = \frac{TP}{TP + FP}$$
+
+\textbf{Recall (per-class):}
+$$\text{Recall} = \frac{TP}{TP + FN}$$
+
+\textbf{F1-Score (macro-averaged):}
+$$\text{F1} = 2 \times \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}}$$
+
+\textbf{Inference Time:}
+Diukur dengan menjalankan model pada 100 batch validation data dan menghitung rata-rata waktu per batch dalam milliseconds.
+
+\textbf{Throughput:}
+$$\text{Throughput (img/s)} = \frac{\text{Batch Size}}{\text{Inference Time (s)}}$$
+
+\textbf{Model Size:}
+Dihitung dari total parameter model dalam MB (assuming float32).
+
+\section{HASIL DAN ANALISIS}
+
+\subsection{Perbandingan Jumlah Parameter}
+\begin{table}[h]
+\caption{Perbandingan Jumlah Parameter dan Ukuran Model}
+\label{tab:parameters}
+\centering
+\begin{tabular}{|l|r|r|}
+\hline
+\textbf{Model} & \textbf{Total Parameters} & \textbf{Size (MB)} \\ \hline
+Swin Transformer Tiny & 27,523,199 & 104.99 \\ \hline
+DeiT Tiny & 5,525,381 & 21.08 \\ \hline
+\textbf{Ratio (Swin/DeiT)} & \textbf{4.98×} & \textbf{4.98×} \\ \hline
+\end{tabular}
+\end{table}
+
+Swin Transformer memiliki hampir 5 kali lebih banyak parameter dibanding DeiT. Perbedaan ini disebabkan oleh:
+\begin{itemize}
+    \item Hierarchical architecture dengan multiple stages
+    \item Embedding dimension yang lebih besar (96 vs 192 per layer)
+    \item Shifted window mechanism yang memerlukan parameter tambahan
+\end{itemize}
+
+\subsection{Perbandingan Metrik Performa}
+\begin{table}[h]
+\caption{Perbandingan Metrik Klasifikasi}
+\label{tab:performance}
+\centering
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Model} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} \\ \hline
+Swin Tiny & \textbf{0.9414} & \textbf{0.9459} & \textbf{0.9413} & \textbf{0.9411} \\ \hline
+DeiT Tiny & 0.8514 & 0.8525 & 0.8515 & 0.8502 \\ \hline
+\textbf{Improvement} & \textbf{+9.00\%} & \textbf{+9.34\%} & \textbf{+8.98\%} & \textbf{+9.09\%} \\ \hline
+\end{tabular}
+\end{table}
+
+Swin Transformer mengungguli DeiT pada semua metrik klasifikasi dengan margin signifikan (sekitar 9\%). Accuracy 94.14\% pada Swin menunjukkan model ini sangat efektif untuk dataset Indonesian Food.
+
+\subsection{Perbandingan Waktu Inferensi}
+\begin{table}[h]
+\caption{Perbandingan Efisiensi Inferensi}
+\label{tab:inference}
+\centering
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Model} & \textbf{Inference Time (ms)} & \textbf{Throughput (img/s)} \\ \hline
+Swin Tiny & 0.39 & 2546.62 \\ \hline
+DeiT Tiny & \textbf{0.26} & \textbf{3871.86} \\ \hline
+\textbf{Speedup (DeiT)} & \textbf{1.52×} & \textbf{1.52×} \\ \hline
+\end{tabular}
+\end{table}
+
+DeiT Tiny lebih cepat 52\% dibanding Swin, memproses 3,871 gambar per detik vs 2,547 gambar per detik. Kecepatan superior ini disebabkan oleh:
+\begin{itemize}
+    \item Jumlah parameter yang jauh lebih sedikit
+    \item Arsitektur yang lebih sederhana tanpa hierarchical stages
+    \item Global attention yang efficient untuk gambar 224×224
+\end{itemize}
+
+\subsection{Visualisasi Kurva Learning}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\textwidth]{Figure/learning_curves.png}
+    \caption{Kurva Training dan Validation Loss/Accuracy untuk Swin dan DeiT}
+    \label{fig:learning-curves}
+\end{figure}
+
+Dari Gambar \ref{fig:learning-curves} dapat diamati:
+\begin{itemize}
+    \item \textbf{Swin:} Konvergensi cepat dengan validation accuracy mencapai 94.14\% di epoch 6 dan stabil hingga akhir. Training loss menurun konsisten tanpa overfitting signifikan.
+    \item \textbf{DeiT:} Konvergensi lebih gradual dengan validation accuracy plateau di sekitar 85.14\%. Gap antara training dan validation loss lebih kecil, menunjukkan regularisasi yang baik.
+\end{itemize}
+
+\subsection{Confusion Matrix}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\textwidth]{Figure/confusion_matrices.png}
+    \caption{Confusion Matrix untuk Swin Transformer (kiri) dan DeiT (kanan)}
+    \label{fig:confusion-matrix}
+\end{figure}
+
+Analisis confusion matrix (Gambar \ref{fig:confusion-matrix}):
+\begin{itemize}
+    \item \textbf{Swin:} Diagonal yang sangat kuat menunjukkan klasifikasi yang akurat. Misclassification minimal, terutama antara kelas yang visual-nya mirip (contoh: nasi\_goreng dan soto\_ayam karena keduanya mengandung nasi).
+    \item \textbf{DeiT:} Lebih banyak off-diagonal elements, terutama pada kelas gado\_gado dan nasi\_goreng yang memiliki variasi visual tinggi.
+\end{itemize}
+
+\subsection{Perbandingan Metrik Komprehensif}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\textwidth]{Figure/metrics_comparison.png}
+    \caption{Bar Chart Perbandingan Semua Metrik}
+    \label{fig:metrics-comparison}
+\end{figure}
+
+\subsection{Analisis Mendalam}
+
+\subsubsection{Mengapa Swin Lebih Baik dari DeiT dalam Akurasi?}
+\begin{enumerate}
+    \item \textbf{Hierarchical Features:} Makanan memiliki struktur visual multi-scale (texture makanan, bentuk keseluruhan, detail garnish). Swin's hierarchical architecture dapat menangkap informasi di berbagai level abstraksi.
+    
+    \item \textbf{Local Attention:} Shifted window mechanism memungkinkan Swin fokus pada detail lokal (contoh: texture rendang yang khas) sebelum mengintegrasikan informasi global.
+    
+    \item \textbf{Kapasitas Model:} 28M parameter memberikan Swin kapasitas learning yang lebih besar untuk menangkap variasi kompleks dalam dataset.
+    
+    \item \textbf{Inductive Bias:} Window-based attention memberikan inductive bias yang mirip CNN, cocok untuk data visual dengan struktur spatial.
+\end{enumerate}
+
+\subsubsection{Trade-off Akurasi vs Parameter vs Kecepatan}
+\begin{itemize}
+    \item \textbf{Swin:} Superior accuracy (94.14\%) dengan cost 5× lebih banyak parameter dan 1.5× lebih lambat
+    \item \textbf{DeiT:} Acceptable accuracy (85.14\%) dengan model ultra-compact dan inference 52\% lebih cepat
+    \item \textbf{Efficiency Score:} DeiT menawarkan 230 img/s per MB model size vs Swin 24 img/s per MB
+\end{itemize}
+
+\subsubsection{Kesesuaian Model dengan Dataset}
+Dataset Indonesian Food memiliki karakteristik:
+\begin{itemize}
+    \item Ukuran medium (2,219 images)
+    \item Variasi visual tinggi per kelas
+    \item Memerlukan understanding multi-scale (texture, shape, composition)
+\end{itemize}
+
+\textbf{Kesimpulan:} Swin lebih sesuai karena hierarchical features-nya dapat menangkap kompleksitas visual makanan Indonesia. DeiT masih acceptable (85\%) namun kurang optimal untuk dataset dengan variasi tinggi.
+
+\section{KESIMPULAN DAN SARAN}
+
+\subsection{Kesimpulan Hasil Perbandingan}
+\begin{enumerate}
+    \item \textbf{Akurasi:} Swin Transformer Tiny unggul dengan accuracy 94.14\% vs DeiT Tiny 85.14\%, improvement 9\%.
+    
+    \item \textbf{Efisiensi:} DeiT Tiny 5× lebih kecil (21 MB vs 105 MB) dan 1.52× lebih cepat (3,872 img/s vs 2,547 img/s).
+    
+    \item \textbf{Kompleksitas:} Swin memerlukan 27.5M parameter vs DeiT 5.5M parameter.
+    
+    \item \textbf{Konvergensi:} Swin konvergen lebih cepat dan stabil di epoch 6, DeiT lebih gradual hingga epoch 10.
+    
+    \item \textbf{Generalization:} Kedua model menunjukkan generalization yang baik tanpa overfitting signifikan berkat regularization yang kuat.
+\end{enumerate}
+
+\subsection{Rekomendasi Model Berdasarkan Use Case}
+
+\subsubsection{Untuk Akurasi Maksimal}
+\textbf{Pilihan: Swin Transformer Tiny}
+\begin{itemize}
+    \item Cocok untuk aplikasi yang mengutamakan akurasi (contoh: medical diagnosis, quality control)
+    \item 94.14\% accuracy memberikan confidence tinggi untuk production deployment
+    \item Trade-off memori dan komputasi dapat diterima untuk server-side processing
+\end{itemize}
+
+\subsubsection{Untuk Efisiensi Komputasi}
+\textbf{Pilihan: DeiT Tiny}
+\begin{itemize}
+    \item Ideal untuk deployment di edge devices (mobile, IoT)
+    \item 21 MB model size memungkinkan deployment on-device tanpa cloud
+    \item 85.14\% accuracy masih acceptable untuk banyak aplikasi consumer-facing
+    \item Inference time 0.26ms memungkinkan real-time processing
+\end{itemize}
+
+\subsubsection{Untuk Aplikasi Real-time}
+\textbf{Pilihan: DeiT Tiny}
+\begin{itemize}
+    \item 3,872 images/second throughput mendukung video processing real-time (30 FPS = 30 img/s)
+    \item Low latency (0.26ms) critical untuk interactive applications
+    \item Cocok untuk aplikasi seperti: food recognition app, restaurant menu scanning, dietary tracking
+\end{itemize}
+
+\subsection{Saran untuk Pengembangan Lebih Lanjut}
+\begin{enumerate}
+    \item \textbf{Model Ensemble:} Kombinasi prediksi Swin dan DeiT dapat meningkatkan accuracy sambil menjaga efisiensi (menggunakan DeiT untuk fast screening, Swin untuk confident prediction).
+    
+    \item \textbf{Knowledge Distillation:} Gunakan Swin sebagai teacher untuk distill knowledge ke DeiT, meningkatkan accuracy DeiT tanpa menambah parameter.
+    
+    \item \textbf{Dataset Augmentation:} Perbesar dataset dengan web scraping atau synthetic data generation untuk meningkatkan performa kedua model.
+    
+    \item \textbf{Model Compression:} Terapkan pruning dan quantization pada Swin untuk mengurangi size sambil mempertahankan accuracy.
+    
+    \item \textbf{Multi-task Learning:} Extend model untuk tidak hanya klasifikasi, tapi juga ingredient detection dan recipe recommendation.
+    
+    \item \textbf{Cross-dataset Evaluation:} Test generalization pada dataset makanan Indonesia dari sumber berbeda.
+    
+    \item \textbf{Explainability:} Implementasi Grad-CAM atau attention visualization untuk memahami region mana yang digunakan model untuk klasifikasi.
+\end{enumerate}
+
+\newpage
+\section{LAMPIRAN}
+
+\subsection{Informasi Repository GitHub}
+Source code lengkap proyek ini tersedia di GitHub:
+\begin{itemize}
+    \item \textbf{Repository:} \url{https://github.com/falihdzakwanz/vision-transformer-comparison.git}
+    \item \textbf{Struktur Proyek:} Terdiri dari scripts training, evaluation, visualization, dan dokumentasi lengkap
+    \item \textbf{Requirements:} requirements.txt berisi semua dependencies yang dibutuhkan
+    \item \textbf{Setup Guide:} README.md dan START\_HERE.md memberikan panduan lengkap untuk reproduksi
+\end{itemize}
+
+\subsection{Output Training Log - Swin Transformer}
+\begin{lstlisting}[language=Python, caption=Training Progress Swin Transformer,label={lst:swin-log}]
+Epoch 1/10 - Train Loss: 1.5665, Train Acc: 33.30%
+           Val Loss: 1.4397, Val Acc: 47.30%
+Epoch 2/10 - Train Loss: 1.3410, Train Acc: 53.95%
+           Val Loss: 1.1675, Val Acc: 71.17%
+Epoch 3/10 - Train Loss: 1.0910, Train Acc: 72.91%
+           Val Loss: 0.8989, Val Acc: 84.68%
+Epoch 4/10 - Train Loss: 0.8562, Train Acc: 83.97%
+           Val Loss: 0.6892, Val Acc: 87.39%
+Epoch 5/10 - Train Loss: 0.6651, Train Acc: 89.05%
+           Val Loss: 0.5449, Val Acc: 91.89%
+Epoch 6/10 - Train Loss: 0.5498, Train Acc: 91.08%
+           Val Loss: 0.4590, Val Acc: 93.69%
+Epoch 7/10 - Train Loss: 0.4918, Train Acc: 91.65%
+           Val Loss: 0.4162, Val Acc: 94.14%
+Epoch 8/10 - Train Loss: 0.4434, Train Acc: 91.42%
+           Val Loss: 0.3885, Val Acc: 94.14%
+Epoch 9/10 - Train Loss: 0.4151, Train Acc: 93.68%
+           Val Loss: 0.3771, Val Acc: 94.14%
+Epoch 10/10 - Train Loss: 0.4175, Train Acc: 92.66%
+            Val Loss: 0.3744, Val Acc: 94.14%
+
+Best Model: Epoch 7 with Validation Accuracy: 94.14%
+\end{lstlisting}
+
+\subsection{Output Training Log - DeiT}
+\begin{lstlisting}[language=Python, caption=Training Progress DeiT,label={lst:deit-log}]
+Epoch 1/10 - Train Loss: 1.4934, Train Acc: 36.68%
+           Val Loss: 1.3944, Val Acc: 47.75%
+Epoch 2/10 - Train Loss: 1.2626, Train Acc: 59.14%
+           Val Loss: 1.1719, Val Acc: 65.77%
+Epoch 3/10 - Train Loss: 1.0479, Train Acc: 74.72%
+           Val Loss: 0.9657, Val Acc: 74.77%
+Epoch 4/10 - Train Loss: 0.8511, Train Acc: 80.70%
+           Val Loss: 0.8157, Val Acc: 80.18%
+Epoch 5/10 - Train Loss: 0.7141, Train Acc: 86.00%
+           Val Loss: 0.7135, Val Acc: 83.33%
+Epoch 6/10 - Train Loss: 0.6378, Train Acc: 86.23%
+           Val Loss: 0.6495, Val Acc: 85.14%
+Epoch 7/10 - Train Loss: 0.5730, Train Acc: 89.16%
+           Val Loss: 0.6117, Val Acc: 85.14%
+Epoch 8/10 - Train Loss: 0.5389, Train Acc: 88.94%
+           Val Loss: 0.5863, Val Acc: 85.14%
+Epoch 9/10 - Train Loss: 0.5144, Train Acc: 89.73%
+           Val Loss: 0.5786, Val Acc: 85.59%
+Epoch 10/10 - Train Loss: 0.5149, Train Acc: 90.86%
+            Val Loss: 0.5764, Val Acc: 85.14%
+
+Best Model: Epoch 9 with Validation Accuracy: 85.59%
+\end{lstlisting}
+
+\subsection{Visualisasi Tambahan}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.85\textwidth]{Figure/parameter_comparison.png}
+    \caption{Perbandingan Jumlah Parameter dan Ukuran Model}
+    \label{fig:param-comp}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.85\textwidth]{Figure/inference_time_comparison.png}
+    \caption{Perbandingan Waktu Inferensi}
+    \label{fig:inference-comp}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\textwidth]{Figure/summary_comparison.png}
+    \caption{Summary Perbandingan Model Swin vs DeiT}
+    \label{fig:summary-comp}
+\end{figure}
+
+\newpage
+\bibliographystyle{IEEEtran}
+\bibliography{Referensi}
+\end{document}
