@@ -161,14 +161,6 @@ Setiap model dievaluasi berdasarkan:
 - Color Jitter
 - Normalization (ImageNet stats)
 
-## 💻 Hardware
-
-Spesifikasi yang digunakan:
-
-- GPU: [Sesuaikan dengan GPU Anda]
-- CPU: [Sesuaikan dengan CPU Anda]
-- RAM: [Sesuaikan dengan RAM Anda]
-
 ## 📝 Hasil
 
 Hasil lengkap tersimpan di folder `outputs/`:
@@ -193,7 +185,7 @@ Untuk hasil yang reproducible:
 
 ## 👨‍🎓 Author
 
-- **Nama**: [Nama Anda]
+- **Nama**: Falih Dzakwan Zuhdi
 - **NIM**: 122140132
 - **Mata Kuliah**: Deep Learning
 - **Semester**: Ganjil 2025/2026
